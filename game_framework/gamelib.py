@@ -1,6 +1,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+CANVAS_WIDTH = 800
+CANVAS_HEIGHT = 500
+TIMER_DELAY = 33
+
 class GameCanvasElement():
     """Base class for an element on the game canvas, with attributes:
 
@@ -83,7 +87,7 @@ class GameApp(ttk.Frame):
     on the canvas, start/stop animation, and running the animation loop.
     """
     
-    def __init__(self, parent, canvas_width=800, canvas_height=500, update_delay=33):
+    def __init__(self, parent, canvas_width=CANVAS_WIDTH, canvas_height=CANVAS_HEIGHT, update_delay=TIMER_DELAY):
         super().__init__(parent)
         self.parent = parent
         
@@ -93,7 +97,7 @@ class GameApp(ttk.Frame):
         self.update_delay = update_delay
 
         self.grid(sticky="news")
-        self.create_canvas()
+        self.canvas = self.create_canvas()
 
         self.elements = []
         self.init_game()
@@ -103,12 +107,14 @@ class GameApp(ttk.Frame):
         
     #TODO refactor this - don't depend on side effects
     def create_canvas(self):
-        self.canvas = tk.Canvas(self, borderwidth=0,
+        canvas = tk.Canvas(self, borderwidth=0,
             width=self.canvas_width, height=self.canvas_height, 
             highlightthickness=0)
         self.canvas.grid(sticky="news")
+        return canvas
 
     def animate(self):
+        """Anime the game and game elements."""
         self.pre_update()
 
         for element in self.elements:
@@ -121,6 +127,16 @@ class GameApp(ttk.Frame):
 
     def start(self):
         self.after(0, self.animate)
+
+    def add_element(self, element: GameElement):
+        """Add element to the game."""
+        self.elements.append(element)
+
+    def remove_element(self, element: GameElement):
+        """Remove element from the game."""
+        if element in self.elements
+            self.elements.remove(element)
+            self.canvas.delete(element.canvas_object_id)
 
     def init_game(self):
         pass
